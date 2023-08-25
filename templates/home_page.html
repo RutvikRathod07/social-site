@@ -1,0 +1,253 @@
+{% extends 'base.html' %}
+{% block title %}  Blog Page  {% endblock %}
+{% block homepage %} active {% endblock homepage %}
+{% block content %}
+
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-10">
+            <div class="profile-header d-flex align-items-center bg-light p-3 rounded">
+                <img src="/media/{{ user.user_img }}" alt="" class="rounded-circle profile-img mr-3" style=" height: 100px;
+        width: 100px;">
+                <div class="profile-info">
+                    <h1 class="profile-name">{{ user.first_name|capfirst }} {{ user.last_name|capfirst }}</h1>
+                    <h4 class="total-posts">All posts {{ total_posts }}</h4>
+                </div>
+            </div>
+        </div>
+    </div>
+<nav aria-label="Page navigation">
+    <ul class="pagination justify-content-center">
+        {% if page_obj.has_previous %}
+        <li class="page-item">
+            <a class="page-link" href="?page=1">&laquo; First</a>
+        </li>
+        <li class="page-item">
+            <a class="page-link" href="?page={{ page_obj.previous_page_number }}">Previous</a>
+        </li>
+        {% else %}
+        <li class="page-item disabled">
+            <span class="page-link">&laquo; First</span>
+        </li>
+        <li class="page-item disabled">
+            <span class="page-link">Previous</span>
+        </li>
+        {% endif %}
+
+        {% if page_obj.number > 4 %}
+        <li class="page-item">
+            <a class="page-link" href="?page=1">1</a>
+        </li>
+        <li class="page-item disabled">
+            <span class="page-link">...</span>
+        </li>
+        {% endif %}
+
+        {% for i in page_obj.paginator.page_range %}
+            {% if i > page_obj.number|add:"-3" and i < page_obj.number|add:"+2" %}
+                {% if i == page_obj.number %}
+                    <li class="page-item active" aria-current="page">
+                        <span class="page-link">{{ i }}</span>
+                    </li>
+                {% else %}
+                    <li class="page-item">
+                        <a class="page-link" href="?page={{ i }}">{{ i }}</a>
+                    </li>
+                {% endif %}
+            {% endif %}
+        {% endfor %}
+
+        {% if page_obj.number < page_obj.paginator.num_pages|add:"-3" %}
+        <li class="page-item disabled">
+            <span class="page-link">...</span>
+        </li>
+        <li class="page-item">
+            <a class="page-link" href="?page={{ page_obj.paginator.num_pages }}">{{ page_obj.paginator.num_pages }}</a>
+        </li>
+        {% endif %}
+
+        {% if page_obj.has_next %}
+        <li class="page-item">
+            <a class="page-link" href="?page={{ page_obj.next_page_number }}">Next</a>
+        </li>
+        <li class="page-item">
+            <a class="page-link" href="?page={{ page_obj.paginator.num_pages }}">Last &raquo;</a>
+        </li>
+        {% else %}
+        <li class="page-item disabled">
+            <span class="page-link">Next</span>
+        </li>
+        <li class="page-item disabled">
+            <span class="page-link">Last &raquo;</span>
+        </li>
+        {% endif %}
+    </ul>
+</nav>
+
+    {% for post in page_obj %}
+    <div class="card my-3 mx-auto" style="max-width: 500px;">
+        <div class="card-header d-flex justify-content-between align-items-center">
+            <div class="d-flex align-items-center">
+                <img src="/media/{{ post.postby.user_img }}" alt="" class="rounded-circle mr-3"
+                     style="height: 30px; width: 30px;">
+                <h6 class="mb-0">{{ post.postby.first_name|capfirst }}</h6>
+            </div>
+            {% if post.postby == user %}
+            <div class="btn-group">
+                <button type="button" class="btn btn-link" data-toggle="dropdown" aria-haspopup="true"
+                        aria-expanded="false">
+                    <i class="fas fa-ellipsis-v"></i>
+                </button>
+                <div class="dropdown-menu dropdown-menu-right">
+                    <a class="dropdown-item" href="/updatepost/{{ post.id }}">Edit</a>
+                    <a class="dropdown-item" href="/deletepost/{{ post.id }}">Delete</a>
+                </div>
+            </div>
+            {% endif %}
+        </div>
+        <img src="/media/{{ post.img }}" alt="" class="card-img-top" style="max-height: 300px;">
+        <div class="card-body">
+            <h6 class="card-title">{{ post.title }}</h6>
+            <p class="card-text" style="font-size: 14px;">{{ post.desc }}</p>
+            <div class="d-flex">
+
+                    <div id="post{{ post.id }}">
+                        <a href="javascript:void(0)" class="btn btn-outline-success btn-sm"
+                           onclick="likepost({{ post.id }})">
+                            <i {% if not post.is_like %} class="far fa-thumbs-up" {% else %} class="fas fa-thumbs-up" {% endif %} id="like{{ post.id }}"></i>
+                            Like<span class="like-count ml-1" id="like-count{{ post.id }}">{{ post.like_count }}</span>
+                        </a>
+                    </div>
+                    <button type="button" class="btn btn-outline-success btn-sm ml-2" onclick="showComments({{ post.id }})">
+                        <i class="fa fa-comments" aria-hidden="true"></i> {{ post.comment_count }}
+                    </button>
+
+            </div>
+            <div id="commentsContainer{{ post.id }}" class="" style="display: none;">
+                <button type="button" class="btn btn-primary mt-3" data-toggle="modal"
+                        data-target="#commentModal{{post.id}}">
+                    Add Comment
+                </button>
+                <h3>Comments:</h3>
+                {% for comment in post.comments %}
+                <div class="row my-2">
+                    <div class="col-md-8">
+                        <span style='font-size:18px;font-family: "Lucida Console", "Courier New", monospace; '>{{ comment.content }}</span>
+                        <small class="ml-4">{{ comment.created_at|date:"d M, Y" }}</small>
+                    </div>
+                    <div class="col-md-4 text-right">
+                        <small class="mr-2" style='font-family: "Courier New"'><b>...{{ comment.user.first_name|capfirst}}</b></small>
+                        {% if comment.user == user %}
+                        <a href="/deletecomment/{{ comment.id }}"><i
+                                class="fas fa-trash"></i></a>
+                        {% endif %}
+
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+            <div class="d-flex mt-2">
+                <div class="modal fade" id="commentModal{{post.id}}" tabindex="-1" role="dialog"
+                     aria-labelledby="commentModalLabel"
+                     aria-hidden="true">
+                    <div class="modal-dialog modal-dialog-centered" role="document">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title " id="commentModalLabel">Add Comment</h5>
+                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
+                            </div>
+                            <div class="modal-body">
+                                <textarea name="comment" id="comment{{post.id}}"
+                                          style="width: 450px;height: 90px;"></textarea>
+                                <div class="form-group text-center">
+                                    <button type="submit" class="btn btn-success" onclick="commentAdd({{post.id}})"
+                                            data-dismiss="modal">
+                                        Save
+                                    </button>
+                                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    {% endfor %}
+</div>
+
+<script>
+function likepost(pk) {
+    $.ajax({
+        type: "POST",
+        url: "/likepost/" + pk + "/",
+        data: {
+            'csrfmiddlewaretoken': '{{ csrf_token }}'
+        },
+        success: function(data) {
+        console.log(data)
+            if (data.status === 'liked') {
+            like_count = Number($("#like-count"+pk).text())+1
+            console.log(like_count)
+            $("#like-count"+pk).text(like_count)
+            $("#like"+pk).removeClass("far")
+            $("#like"+pk).addClass("fas")
+            }
+            else {
+             like_count = Number($("#like-count"+pk).text())-1
+             console.log(like_count)
+             $("#like-count"+pk).text(like_count)
+             $("#like"+pk).removeClass("fas")
+             $("#like"+pk).addClass("far")
+            }
+        },
+    });
+}
+ function commentAdd(postId) {
+  var data = {
+    postId: postId,
+    comment: $("#comment" + postId).val()
+  };
+  console.log(data)
+  // Send the AJAX request
+  $.ajax({
+    type: "GET",
+    url: "/add-comment",
+    data: data,
+    success: function(response) {
+      console.log("Comment added successfully");
+    },
+    error: function(error) {
+      console.log("An error occurred while adding the comment");
+    }
+  });
+}
+   function showComments(postId) {
+        var commentsContainer = $("#commentsContainer" + postId);
+
+        // Toggle the display of comments container
+        commentsContainer.toggle();
+
+        // Check if the comments container is visible
+        if (commentsContainer.is(":visible")) {
+            // Fetch the comments using AJAX
+            $.ajax({
+                type: "GET",
+                url: "/get-comments",
+                data: { postId: postId },
+                success: function(response) {
+                    // Populate the comments container with the retrieved comments
+                    commentsContainer.html(response);
+                },
+                error: function(error) {
+                    console.log("An error occurred while fetching comments");
+                }
+            });
+        }
+    }
+</script>
+
+{% endblock %}

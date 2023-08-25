@@ -1,0 +1,64 @@
+{% extends 'base.html' %}
+{% block title %}  Blog Page  {% endblock %}
+{% block edit_active %} active {% endblock edit_active %}
+{% block content %}
+{% load widget_tweaks %}
+{% load widget_tweaks %}
+
+<div class="container my-5">
+    <div class="card p-4">
+        <h1 class="text-center mb-4">Login</h1>
+        <form method="POST" class="post-form"  enctype="multipart/form-data">
+            {% csrf_token %}
+            <div class="form-group">
+                <label for="id_password">First Name:</label>
+                {{ form.first_name|add_class:"form-control" }}
+                  {% if form.first_name.errors %}
+                <span class="alert alert-light" style=" background-color: transparent !important;"> {{ form.first_name.errors|striptags}}</span>
+                {% endif %}
+            </div>
+            <div class="form-group">
+                <label for="id_password">Last Name:</label>
+                {{ form.last_name|add_class:"form-control" }}
+                 {% if form.last_name.errors %}
+                <span class="alert alert-light" style=" background-color: transparent !important;"> {{ form.last_name.errors|striptags}}</span>
+                {% endif %}
+            </div>
+            <div class="form-group">
+                <label for="id_username">Email:</label>
+                {{ form.email|add_class:"form-control" }}
+                {% if form.email.errors %}
+                <span class="alert alert-light" style=" background-color: transparent !important;"> {{ form.email.errors|striptags}}</span>
+                {% endif %}
+            </div>
+                  <div class="form-group">
+                <label for="id_username">Image:</label>
+                {{ form.user_img|add_class:"form-control" }}
+                {% if form.user_img.errors %}
+                <span class="alert alert-light" style=" background-color: transparent !important;"> {{ form.user_img.errors|striptags}}</span>
+                {% endif %}
+            </div>
+            <div class="form-group">
+                <label for="id_password">City:</label>
+                {{ form.city|add_class:"form-control" }}
+                  {% if form.city.errors %}
+                <span class="alert alert-light" style=" background-color: transparent !important;"> {{ form.city.errors|striptags}}</span>
+                {% endif %}
+            </div>
+            <div class="form-group">
+                <label for="id_password">Phone:</label>
+                {{ form.phone|add_class:"form-control" }}
+                 {% if form.phone.errors %}
+                <span class="alert alert-light" style=" background-color: transparent !important;"> {{ form.phone.errors|striptags}}</span>
+                {% endif %}
+            </div>
+            <div class="form-group">
+                <button type="submit" class="btn btn-primary m-2">Edit</button>
+                <button type="button" class="btn btn-secondary m-2"><a href="{% url 'display_post' %}" style="color:white;text-decoration:none; ">Cancle</a>
+                <button type="button" class="btn btn-danger m-2"><a href="{% url 'delete_user' user.pk %}" style="color:white; text-decoration:none; ">Delete user</a>
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+{% load widget_tweaks %}
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>SignUp Page</title>
+    <!-- Add Bootstrap CSS link -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/css/bootstrap.min.css"
+          integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+</head>
+<body>
+<style>
+        body {
+            background-color: #f8f9fa;
+        }
+        .form-container {
+            background-color: #fff;
+            border-radius: 5px;
+            box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+            padding: 30px;
+        }
+        .form-group label {
+            font-weight: bold;
+        }
+        .btn-primary {
+            background-color: #007bff;
+            border-color: #007bff;
+            font-weight: bold;
+        }
+        .btn-primary:hover {
+            background-color: #0062cc;
+            border-color: #0062cc;
+        }
+
+
+</style>
+
+<div class="row mt-3">
+    <div class="col-12 d-flex justify-content-center">
+        <div class="d-flex align-items-center mb-3">
+            <h1>Click here to see...</h1>
+            <button type="button" class="btn btn-success ml-3"><a href="{% url 'display_all_post' %}" style="color:white; text-decoration:none;">All Posts <i class="fas fa-chevron-right" aria-hidden="true"></i></a></button>
+        </div>
+    </div>
+</div>
+
+<div class="container my-2">
+    <div class="row justify-content-center">
+        <div class="col-lg-6">
+            <h2 class="text-center">Sign Up</h2>
+
+            <div class="form-container">
+                <form method="POST" class="post-form" enctype="multipart/form-data" novalidate>
+                    {% csrf_token %}
+                    <div class="form-group">
+                        <label>First Name:</label>
+                        {{ form.first_name|add_class:"form-control" }}
+                        {% if form.first_name.errors %}
+                        <span class="alert alert-light" style=" background-color: transparent !important;"> {{ form.first_name.errors|striptags}}</span>
+                        {% endif %}
+                    </div>
+                    <div class="form-group">
+                        <div class="form-group">
+                            <label>Last Name:</label>
+                            {{ form.last_name|add_class:"form-control" }}
+                            {% if form.last_name.errors %}
+                            <span class="alert alert-light" style=" background-color: transparent !important;"> {{ form.last_name.errors|striptags}}</span>
+                            {% endif %}
+                        </div>
+                        <div class="form-group">
+                            <label>Email:</label>
+                            {{ form.email|add_class:"form-control" }}
+                            {% if form.email.errors %}
+                            <span class="alert alert-light" style=" background-color: transparent !important;"> {{ form.email.errors|striptags}}</span>
+                            {% endif %}
+                        </div>
+                        <div class="form-group">
+                            <label>Password:</label>
+                            {{ form.password|add_class:"form-control" }}
+                            {% if form.password.errors %}
+                            <span class="alert alert-light" style=" background-color: transparent !important;"> {{ form.password.errors|striptags}}</span>
+                            {% endif %}
+                        </div>
+                        <div class="form-group">
+                            <label>City:</label>
+                            {{ form.city|add_class:"form-control" }}
+                            {% if form.city.errors %}
+                            <span class="alert alert-light" style=" background-color: transparent !important;"> {{ form.city.errors|striptags}}</span>
+                            {% endif %}
+                        </div>
+                        <div class="form-group">
+                            <label>Phone:</label>
+                            {{ form.phone|add_class:"form-control" }}
+                            {% if form.phone.errors %}
+                            <span class="alert alert-light" style=" background-color: transparent !important;"> {{ form.phone.errors|striptags}}</span>
+                            {% endif %}
+                        </div>
+                        <div class="form-group">
+                            <label>Image:</label>
+                            {{ form.user_img|add_class:"form-control" }}
+                            {% if form.user_img.errors %}
+                            <span class="alert alert-light" style=" background-color: transparent !important;"> {{ form.user_img.errors|striptags}}</span>
+                            {% endif %}
+                        </div>
+                        <div class="form-group text-center">
+                            <button type="submit" class="btn btn-primary w-100 " style="margin-bottom: 15px;">Sign Up
+                            </button>
+                            <a href="{% url 'login' %}" style="text-decoration: none;color:03A9F4;">Already have an
+                                account?</a>
+
+                        </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"
+        integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/XvoWjWTdQho4Mcl"
+        crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/popper.js@1.12.9/dist/umd/popper.min.js"
+        integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q"
+        crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/js/bootstrap.min.js"
+        integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl"
+        crossorigin="anonymous"></script>
+</body>
+</html>
